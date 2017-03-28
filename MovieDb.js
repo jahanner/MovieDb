@@ -74,19 +74,25 @@ function render() {
 
   // insert watchlist items
   model.watchlistItems.forEach(function(movie) {
-    var title = $("<p></p>").text(movie.original_title);
-
+    var title = $("<h3></h3>").text(movie.original_title);
+    title.css('text-decoration', 'underline');
+    // var image = $("<img>");
+    // image.src = movie.poster_path;
+    var text = $("<p>"+ movie.overview + "</p>");
     var itemView = $("<li></li>")
       .append(title)
+      .append(text)
+    //   .append(image)
       // TODO 3
       // give itemView a class attribute of "item-watchlist"
-      .attr('class',"item-watchlist");
+      .attr('class',"item-watchlist")
     $("#section-watchlist ul").append(itemView);
   });
 
   // insert browse items
   model.browseItems.forEach(function(movie) {
-    var title = $("<h4></h4>").text(movie.original_title);
+    var title = $("<h3></h3>").text(movie.original_title);
+    title.css('text-decoration', 'underline');
     var button = $("<button></button>")
       .text("Add to Watchlist")
       .click(function() {

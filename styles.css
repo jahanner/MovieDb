@@ -15,9 +15,10 @@ and then style them as shown in the example (padding, margin, background, etc)
 .item-watchlist{
 	display: inline-block;
 	margin: 10px 10px 0px 0px;
-    padding: 60px;
+    padding: 20px;
     background: orange;
     color: white;
+	width: 200px;
 }
 
 body {
