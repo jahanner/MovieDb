@@ -1,75 +1,45 @@
-/*
-HINT
-For CSS stuff, make good use of the Chrome Developer Tools:
--- on the demo page, open up the inspector and poke around.
--- on your own page, use dev tools to add and modify styles directly in the browser.
-*/
 
-
-/*
-TODO 4
-add a selector for elements with class "item-watchlist"
-give these elements a display property of inline-block
-and then style them as shown in the example (padding, margin, background, etc)
-*/
-.item-watchlist{
-	display: inline-block;
-	margin: 10px 10px 0px 0px;
-    padding: 20px;
-    background: orange;
-    color: white;
-	width: 200px;
+.jumbotron {
+	text-align: center;
+	margin-bottom: 1%;
 }
 
-body {
-	color: grey;
+.watchListItems {
+	width: 160px;
+	margin-right: 10px;
+	margin-bottom: 10px;
+	padding: 0px;
 }
-/*
-TODO 5
-Make all elements have color: gray; by default
-Hint: just apply the style using a parent selector, and then all
-descendent elements will automatically inherit the same styles
-*/
 
+button btn btn-danger {
+	width: 100%;
+	padding-top: 10px;
+}
 
-
-#big-header {
-	background: gray;
-	color: white;
+#section-watchlist {
 	text-align: center;
 }
 
-#section-browse {
-	background: #eee;
+.main-content {
+	color: gray;
 }
 
-#section-browse li {
-	margin-bottom: 40px;
-	list-style: none;
+#section-browse {
+	background: black;
+}
+
+#section-browse form {
+	margin-bottom: 2%;
+}
+
+hr {
+	border-color: rgba(128,128,128,0.2);
 }
 
 section header {
-	margin-bottom: 40px;
+	margin-bottom: 10px;
 }
 
-section, #big-header {
-	padding: 20px;
-}
-
-ul {
-	padding-left: 0px;
-}
-
-button, input[type="submit"] {
-	padding: 10px;
-    background: orange;
-    color: white;
-	/*
-	TODO 7
-	give these buttons some padding, and color them orange with white text
-	*/
-}
-
-button:disabled {
-	opacity: 0.5;
+section {
+	padding: 2%;
 }
