@@ -75,7 +75,8 @@ function render() {
   // insert watchlist items
   model.watchlistItems.forEach(function(movie) {
 
-    var title = $("<h4></h4>").text(movie.original_title);
+    var title = $("<strong><h4></h4></strong>").text(movie.original_title);
+    var vote = $("<h6></h6>").text("Average rating " + movie.vote_average + " out of 10.");
 
     // TODO (DONE)
     // add an "I watched it" button
@@ -95,7 +96,8 @@ function render() {
 
     var panelHeading = $("<div></div>")
       .attr("class", "panel-heading")
-      .append(title);
+      .append(title)
+      .append(vote);
 
     var panelBody = $("<div></div>")
       .attr("class", "panel-body")
