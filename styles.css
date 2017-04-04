@@ -27,11 +27,17 @@ button btn btn-danger {
 #section-browse {
 	background: black;
 }
+#section-browse ul {
+	color: black;
+}
 
 #section-browse form {
 	margin-bottom: 2%;
 }
 
+#section-browse h2 {
+	text-align: center;
+}
 hr {
 	border-color: rgba(128,128,128,0.2);
 }

@@ -42,10 +42,18 @@
             <form id="form-search">
                 <div class='input-group'>
                      <input type="text" name="query" class='form-control' placeholder='Search for Movies'/>
-                   <span class='input-group btn'>
-                      <input type="submit" class='btn btn-primary' value="Search By Title"/>
+                   <span class='input-group-btn'>
+                      <input type="submit" class='btn btn-primary' value="Search By Theme"/>
+                      <br>
                    </span>
                 </div>
+                    <br>
+                    <select class='selectpicker' data-style='btn-primary'>
+                        <option id='highestRating'>Highest rating</option>
+                        <option id='highestGrossing'>Highest Grossing</option>
+                        <option id='mostPopular'>Most popular</option>
+                    </select>
+                    <input type='submit' class='btn btn-primary' value='Search by'/>
             </form>
 
           </header>

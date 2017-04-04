@@ -20,48 +20,58 @@ var api = {
   }
 }
 
-
+//discover/movie?sort_by=vote_average.desc
 /**
  * Makes an AJAX request to themoviedb.org, asking for some movies
  * if successful, updates the model.browseItems appropriately, and then invokes
  * the callback function that was passed in
  */
-function discoverMovies(callback) {
-  $.ajax({
-    url: api.root + "/discover/movie",
-    data: {
-      api_key: api.token
-    },
-    success: function(response) {
-      model.browseItems = response.results;
-      callback(response);
-      console.log(response);
-    }
-  });
-}
+ function discoverMovies(callback, keywords) {
 
 
-/**
- * Makes an AJAX request to the /search endpoint of the API, using the
- * query string that was passed in
- *
- * if successful, updates model.browseItems appropriately and then invokes
- * the callback function that was passed in
- */
-function searchMovies(query, callback) {
-  $.ajax({
-    url: api.root + "/search/movie",
-    data: {
-      api_key: api.token,
-      query: query
-    },
-    success: function(response) {
-      model.browseItems = response.results;
-      callback(response);
-    }
-  });
-}
+   $.ajax({
+     url: api.root + "/discover/movie",
+     data: {
+       api_key: api.token,
+       with_keywords: keywords,
+     },
+     success: function(response) {
+       model.browseItems = response.results;
+       callback(response);
+     }
+   });
+ }
 
+
+
+ /**
+  * Makes an AJAX request to the /search/keywords endpoint of the API, using the
+  * query string that was passed in
+  *
+  * if successful, invokes the supplied callback function, passing in
+  * the API's response.
+  */
+ function searchMovies(query, callback) {
+
+
+   $.ajax({
+     url: api.root + "/search/keyword",
+     data: {
+       api_key: api.token,
+       query: query,
+     },
+     success: function(response) {
+       console.log(response);
+       var keywordIDs = response.results.map(function(obj){
+           return obj.id;
+       });
+       console.log(keywordIDs);
+       keywordsString = keywordIDs.join("|");
+       console.log(keywordsString);
+       discoverMovies(callback, keywordsString);
+     }
+   });
+ }
 
 /**
  * re-renders the page with new content, based on the current state of the model
@@ -76,7 +86,11 @@ function render() {
   model.watchlistItems.forEach(function(movie) {
 
     var title = $("<strong><h4></h4></strong>").text(movie.original_title);
-    var vote = $("<h6></h6>").text("Average rating " + movie.vote_average + " out of 10.");
+    var rating = movie.vote_average;
+    var vote = $("<h6></h6>").text("Average rating " + rating + " out of 10.");
+    if (rating == 0){
+        vote.text("This movie has not yet been rated.")
+    }
 
     // TODO (DONE)
     // add an "I watched it" button
@@ -115,7 +129,7 @@ function render() {
   // insert browse items
   model.browseItems.forEach(function(movie) {
 
-    var title = $("<h6></h6>").text(movie.original_title);
+    var title = $("<strong><h4></h4></strong>").text(movie.original_title);
 
     var button = $("<button></button>")
       .text("Add to Watchlist")
