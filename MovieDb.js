@@ -42,8 +42,6 @@ var api = {
    });
  }
 
-
-
  /**
   * Makes an AJAX request to the /search/keywords endpoint of the API, using the
   * query string that was passed in
