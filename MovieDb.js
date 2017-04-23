@@ -13,8 +13,7 @@ var api = {
    * Given a movie object, return the url to its poster image
    */
   posterUrl: function(movie) {
-    // TODO (DONE)
-    // implement this function
+
     var baseImageUrl = "http://image.tmdb.org/t/p/";
     return baseImageUrl + "w300/" + movie.poster_path;
   }
@@ -27,7 +26,6 @@ var api = {
  * the callback function that was passed in
  */
  function discoverMovies(callback, keywords) {
-
 
    $.ajax({
      url: api.root + "/discover/movie",
@@ -51,7 +49,6 @@ var api = {
   */
  function searchMovies(query, callback) {
 
-
    $.ajax({
      url: api.root + "/search/keyword",
      data: {
@@ -74,6 +71,8 @@ var api = {
 /**
  * re-renders the page with new content, based on the current state of the model
  */
+
+
 function render() {
 
   // clear everything
@@ -90,8 +89,7 @@ function render() {
         vote.text("This movie has not yet been rated.")
     }
 
-    // TODO (DONE)
-    // add an "I watched it" button
+
     var button = $("<button>")
       .text("I watched it")
       .attr("class", "btn btn-danger")
@@ -109,17 +107,20 @@ function render() {
     var panelHeading = $("<div></div>")
       .attr("class", "panel-heading")
       .append(title)
-      .append(vote);
+      .append(vote)
+
 
     var panelBody = $("<div></div>")
       .attr("class", "panel-body")
       .append(poster)
       .append(button);
 
+
     var itemView = $("<li></li>")
       .attr("class", "panel panel-default")
       .append(panelHeading)
-      .append(panelBody);
+      .append(panelBody)
+
 
     $("#section-watchlist ul").append(itemView);
   });
@@ -139,13 +140,23 @@ function render() {
       .attr("class", "btn btn-primary");
 
     var overview = $("<p></p>").text(movie.overview);
+    // var poster = $("<img></img>")
+    //   .attr("src", api.posterUrl(movie))
+    //   .attr("class", "img-responsive");
+    // hidden_img = $("<div>" + poster + "</div>");
+    // hidden_img.css("display", "hidden");
 
     // append everything to itemView, along with an <hr/>
     var itemView = $("<li></li>")
       .append(title)
       .append(overview)
       .append(button)
+    //   .append(hidden_img)
       .attr("class", "list-group-item");
+
+    //   $("itemView").on("hover", function(){
+    //       hidden_img.css("display", "visible")
+    //   });
 
     // append the itemView to the list
     $("#section-browse ul").append(itemView);
@@ -154,12 +165,12 @@ function render() {
 }
 
 
-
 $(document).ready(function() {
   $("#form-search").submit(function(evt) {
     evt.preventDefault();
     var query = $("#form-search input[name=query]").val();
     searchMovies(query, render);
+
   });
 
   discoverMovies(render);
