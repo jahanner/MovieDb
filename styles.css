@@ -1,51 +1,81 @@
+.well {
+	background: red;
+	color: white;
+	border-width: 0px;
+}
+
+.btn {
+	width: 100%;
+}
 
 .jumbotron {
+	background: gray;
+	color: white;
 	text-align: center;
-	margin-bottom: 1%;
-}
-
-.watchListItems {
-	width: 160px;
-	margin-right: 10px;
-	margin-bottom: 10px;
-	padding: 0px;
-}
-
-button btn btn-danger {
-	width: 100%;
-	padding-top: 10px;
 }
 
 #section-watchlist {
+	color: gray;
+	min-height: 300px;
 	text-align: center;
 }
 
-.main-content {
-	color: gray;
+#section-watchlist li {
+	display: inline-block;
+	width: 250px;
+	margin: 10px;
+	position: relative;
+}
+
+#section-watchlist button {
+	position: absolute;
+	bottom: 0px;
+	width: 100%;
+	background: rgba(0,0,0,0.7);
+	color: white;
+	border-radius: 4px;
+	border-top-left-radius: 0px;
+	border-top-right-radius: 0px;
+}
+
+#section-watchlist button:hover {
+	background: red;
+	color: white;
+}
+
+.panel {
+	margin: 0px;
+}
+
+.carousel {
+	max-width: 300px;
+	margin: 0 auto;
+	margin-bottom: 10px;
+}
+
+img {
+	width: 100%;
+	border-radius: 4px;
+}
+
+ul {
+	padding: 0px;
 }
 
 #section-browse {
 	background: black;
 }
-#section-browse ul {
-	color: black;
+
+header {
+	margin-bottom: 40px;
+	color: gray;
 }
 
-#section-browse form {
-	margin-bottom: 2%;
+section, .jumbotron {
+	padding: 20px;
 }
 
-#section-browse h2 {
+footer {
 	text-align: center;
-}
-hr {
-	border-color: rgba(128,128,128,0.2);
-}
-
-section header {
-	margin-bottom: 10px;
-}
-
-section {
-	padding: 2%;
+	margin-top: 60px;
 }
