@@ -76,7 +76,7 @@ function fetchKeywords(query, cbSuccess, cbError) {
     url: api.root + "/search/keyword",
     data: {
       api_key: api.token,
-      query: query
+      query: query,
     },
     success: cbSuccess,
     error: cbError
@@ -208,12 +208,3 @@ function addActiveMovie() {
   var activeMovie = model.browseItems[model.browseActiveIndex];
   model.watchlistItems.push(activeMovie);
 }
-$("#Login").on('click', function(){
-    $.ajax({
-      url: 'email.html',
-      success: function(data) {
-        $('.result').html(data);
-        alert('Load was performed.');
-      }
-    });
-})

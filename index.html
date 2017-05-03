@@ -24,17 +24,6 @@
     <h1>FlickList</h1>
     <p>Keep a list of all the movies you've been meaning to watch.</p>
     <a href='Login' id='Login' style='color: purple;'>Login</a>
-    <script>
-    $("#Login").on('click', function(){
-        $.ajax({
-          url: 'email.html',
-          success: function(data) {
-            $('.result').html(data);
-            alert('Load was performed.');
-          }
-        });
-    })
-    </script>
   </header>
 
   <section id="section-watchlist">
