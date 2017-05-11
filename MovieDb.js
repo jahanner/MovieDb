@@ -16,7 +16,6 @@ var api = {
 }
 
 
-
 /**
  * Makes an AJAX request to the /discover endpoint of the API, using the
  * keyword ID that was passed in
@@ -205,6 +204,70 @@ function removeFromWatchlist(movie) {
 
 function addActiveMovie() {
   // DONE
+  var ref = firebase.database().ref();
+  var user = firebase.auth().currentUser.uid;
   var activeMovie = model.browseItems[model.browseActiveIndex];
-  model.watchlistItems.push(activeMovie);
+  ref.child(user).push(activeMovie);
 }
+
+$("#add-to-watchlist").click(function() {
+    var user = firebase.auth().currentUser.uid;
+      if(user === 'null') {
+          addActiveMovie();
+          render();
+      } else {
+          window.alert("You must be logged in to add movies...");
+      }
+});
+
+var config = {
+  apiKey: "AIzaSyC62ckmk8cuoWd71_jhKtlEdoJRBPLZ2ro",
+  authDomain: "movie-watchlist-app.firebaseapp.com",
+  databaseURL: "https://movie-watchlist-app.firebaseio.com",
+  projectId: "movie-watchlist-app",
+  storageBucket: "movie-watchlist-app.appspot.com",
+  messagingSenderId: "576360931179"
+};
+
+firebase.initializeApp(config);
+
+//Get elements
+var txtEmail = $("#txtEmail");
+var txtPassword = $("#txtPassword");
+var btnLogin = $("#btnLogin");
+var btnSignUp = $("#btnSignUp");
+var btnLogout = $("#btnLogout");
+
+//Login event
+btnLogin.on('click', function(){
+    var email = txtEmail.val();
+    var pass = txtPassword.val();
+    var auth = firebase.auth();
+    var promise = auth.signInWithEmailAndPassword(email, pass);
+    promise.catch(e => console.log(e.message));
+})
+
+//Signup event
+btnSignUp.on('click', function(){
+    var email = txtEmail.val();
+    var pass = txtPassword.val();
+    var auth = firebase.auth();
+    var promise = auth.createUserWithEmailAndPassword(email, pass);
+    promise.catch(e => console.log(e.message));
+})
+
+btnLogout.on('click', function(){
+    firebase.auth().signOut();
+});
+
+//Realtime listener
+firebase.auth().onAuthStateChanged(firebaseUser => {
+    if(firebaseUser) {
+        console.log(firebaseUser);
+        btnLogout.removeClass('hide');
+    }
+    else {
+        console.log('not logged in');
+        btnLogout.addClass('hide');
+    }
+});

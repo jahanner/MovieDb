@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <script src="https://code.jquery.com/jquery-2.2.3.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/3.8.0/firebase.js"></script>
 
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 
@@ -14,26 +15,40 @@
   -->
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 
-  <link rel="stylesheet" href="styles.css"/>
+  <link rel="stylesheet" href="styles/main.css"/>
 
-  <title>FlickList</title>
+  <title>Movie Watchlist</title>
 </head>
 <body>
 
   <header class="jumbotron">
-    <h1>FlickList</h1>
-    <p>Keep a list of all the movies you've been meaning to watch.</p>
-    <a href='Login' id='Login' style='color: purple;'>Login</a>
-  </header>
 
-  <section id="section-watchlist">
+    <h1>Movie Watchlist</h1>
+
+    <p>Keep a list of all the movies you've been meaning to watch.</p>
+
+    <div class='container'>
+
+        <input id='txtEmail' type='email' placeholder='Email' style='color: black;'/>
+
+        <input id='txtPassword' type='password' placeholder='Password' style='color: black; '/>
+
+        <button id='btnLogin' class='btn btn-primary'>Log in</button>
+
+        <button id='btnSignUp' class='btn btn-secondary' style='color: black;'>Sign In</button>
+
+        <button id='btnLogout' class='btn btn-action'>Log out</button>
+
+    </div>
+
+  <!-- <section id="section-watchlist">
     <header>
       <h2>My Watchlist</h2>
       <hr/>
     </header>
 
     <ul></ul>
-  </section>
+  </section> -->
 
   <section id="section-browse">
     <div class="row">
@@ -99,20 +114,8 @@
     </p>
   </footer>
 
-  <script src="MovieDb.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/3.8.0/firebase.js"></script>
-  <script>
-    // Initialize Firebase
-    var config = {
-      apiKey: "AIzaSyC62ckmk8cuoWd71_jhKtlEdoJRBPLZ2ro",
-      authDomain: "movie-watchlist-app.firebaseapp.com",
-      databaseURL: "https://movie-watchlist-app.firebaseio.com",
-      projectId: "movie-watchlist-app",
-      storageBucket: "movie-watchlist-app.appspot.com",
-      messagingSenderId: "576360931179"
-    };
-    firebase.initializeApp(config);
-  </script>
+  <script src="scripts/main.js"></script>
+
   <script>
     $(document).ready(function() {
       $("#form-search").submit(function(evt) {
@@ -122,10 +125,7 @@
       });
       // DONE
       // add event handler to the "Add to Watchlist" button
-      $("#add-to-watchlist").click(function() {
-        addActiveMovie();
-        render();
-      });
+
       // DONE
       // add event handler for when the carousel has slid
       $("#browse-carousel").bind("slid.bs.carousel", function() {
