@@ -172,7 +172,7 @@ function render() {
 
   // DONE display info for the currently active movie
   var activeMovie = model.browseItems[model.browseActiveIndex];
-  var title = $("<h3></h3>").text(activeMovie.original_title);
+  var title = $("<h2></h2>").text(activeMovie.original_title);
   var overview = $("<p></p>").text(activeMovie.overview);
   browseInfo
     .append(title)
@@ -202,22 +202,39 @@ function removeFromWatchlist(movie) {
   });
 }
 
+function escapeEmailAddress(email) {
+  if (!email) return false
+
+  email = email.toLowerCase();
+  email = email.replace(/\./g, ',');
+  return email;
+}
+
 function addActiveMovie() {
   // DONE
+
   var ref = firebase.database().ref();
-  var user = firebase.auth().currentUser.uid;
+  var user_email = firebase.auth().currentUser.email;
   var activeMovie = model.browseItems[model.browseActiveIndex];
-  ref.child(user).push(activeMovie);
+  ref.child('/Users/' + escapeEmailAddress(user_email) + '/movies/').push(activeMovie);
+
 }
 
 $("#add-to-watchlist").click(function() {
-    var user = firebase.auth().currentUser.uid;
-      if(user === 'null') {
-          addActiveMovie();
-          render();
-      } else {
-          window.alert("You must be logged in to add movies...");
-      }
+    var user = firebase.auth().currentUser;
+    firebase.auth().onAuthStateChanged(firebaseUser => {
+        if(firebaseUser) {
+            console.log(firebaseUser);
+            btnLogout.removeClass('hide');
+            addActiveMovie();
+            render();
+        }
+        else {
+            window.alert("You can't add movies unless you are logged in yo.");
+            btnLogout.addClass('hide');
+        }
+    });
+
 });
 
 var config = {
@@ -244,16 +261,19 @@ btnLogin.on('click', function(){
     var pass = txtPassword.val();
     var auth = firebase.auth();
     var promise = auth.signInWithEmailAndPassword(email, pass);
-    promise.catch(e => console.log(e.message));
+    promise.catch(e => window.alert(e.message));
 })
 
 //Signup event
 btnSignUp.on('click', function(){
     var email = txtEmail.val();
     var pass = txtPassword.val();
+    if (pass.length < 4) {
+        window.alert("Password must be longer than 4 characters.")
+    }
     var auth = firebase.auth();
     var promise = auth.createUserWithEmailAndPassword(email, pass);
-    promise.catch(e => console.log(e.message));
+    promise.catch(e => window.alert(e.message));
 })
 
 btnLogout.on('click', function(){
