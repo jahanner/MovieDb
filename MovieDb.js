@@ -1,5 +1,4 @@
 
-
     var model = {
       watchlistItems: [],
       browseItems: [],
@@ -220,6 +219,14 @@
       ref.child('/Users/' + escapeEmailAddress(user_email) + '/movies/' + escapeEmailAddress(movie)).set(activeMovie);
 
     }
+    
+    $(".mywatchlist").click(function(){
+      var ref = firebase.database().ref("Users/" + user_email + "/movies/");
+      console.log(ref);
+      var watchlist = $("#section-watchlist");
+      watchlist.removeClass('hide');
+    })
+
 
     $("#add-to-watchlist").click(function() {
         var user = firebase.auth().currentUser;
@@ -247,6 +254,7 @@
     };
 
     firebase.initializeApp(config);
+    $("#section-watchlist").addClass('hide');
 
     //Get elements
     var txtEmail = $("#txtEmail");
