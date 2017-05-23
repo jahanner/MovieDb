@@ -211,20 +211,38 @@
 
     function addActiveMovie() {
       // DONE
-
-      var ref = firebase.database().ref();
+      var watchlistElement = $("#section-watchlist ul");
       var user_email = firebase.auth().currentUser.email;
       var activeMovie = model.browseItems[model.browseActiveIndex];
       var movie = activeMovie.title;
-      ref.child('/Users/' + escapeEmailAddress(user_email) + '/movies/' + escapeEmailAddress(movie)).set(activeMovie);
+      var ref = firebase.database().ref("Users/" + escapeEmailAddress(user_email) + '/movies/' + escapeEmailAddress(movie));
+      ref.set(activeMovie);
+      watchlistElement.append(activeMovie);
+      ref.on("child_added", function(snapshot) {
+        console.log(snapshot.key);
+      });
 
     }
-    
+
     $(".mywatchlist").click(function(){
-      var ref = firebase.database().ref("Users/" + user_email + "/movies/");
-      console.log(ref);
-      var watchlist = $("#section-watchlist");
-      watchlist.removeClass('hide');
+      var watch_list = $("#section-watchlist ul");
+      var user = firebase.auth().currentUser;
+      var user_email = firebase.auth().currentUser.email;
+      var ref = firebase.database().ref("Users/" + escapeEmailAddress(user_email) + "/movies/");
+
+      firebase.auth().onAuthStateChanged(firebaseUser => {
+          if(firebaseUser) {
+              watch_list.removeClass('hide');
+              render();
+              watch_list.append(ref);
+              console.log(ref);
+
+          }
+          else {
+              window.alert("You can't view watchlist unless you are logged in yo.");
+              watch_list.addClass('hide');
+          }
+      });
     })
 
 

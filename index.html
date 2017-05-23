@@ -51,7 +51,7 @@
         <div class="well">
           <div class="row">
 
-            <div class="col-sm-7" id="browse-info" style='color: black; background-color: blue;'></div>
+            <div class="col-sm-7" id="browse-info" style='color: black; background-color: #0066ff;'></div>
 
             <div class="col-sm-5">
               <div class="carousel slide" id="browse-carousel"/>
@@ -95,7 +95,6 @@
   </section>
 
    <section id="section-watchlist">
-   <h1>YO</h1>
     <ul></ul>
   </section>
 
@@ -114,10 +113,8 @@
         var query = $("#form-search input[name=query]").val();
         searchMovies(query, render);
       });
-      // DONE
       // add event handler to the "Add to Watchlist" button
 
-      // DONE
       // add event handler for when the carousel has slid
       $("#browse-carousel").bind("slid.bs.carousel", function() {
           console.log("slid")
