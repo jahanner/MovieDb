@@ -230,11 +230,56 @@
       var ref = firebase.database().ref("Users/" + escapeEmailAddress(user_email) + '/movies/');
 
       ref.once("value", function(snapshot) {
-        snapshot.forEach(function(childSnapshot) {
-          var childData = childSnapshot.val();
-          console.log(childData);
+        snapshot.forEach(function(movie) {
+
+          console.log(movie.val());
+          var title = $("<h4></h4>").text(movie.val().original_title);
+          var rating = movie.val().vote_average;
+          var vote = $("<h6></h6>").text("Average rating " + rating + " out of 10.");
+          var panelHeading = $("<div></div>")
+            .attr("class", "panel-heading")
+            .append(title)
+            .append(vote);
+
+          // panel body
+          var poster = $("<img></img>")
+            .attr("src", posterUrl(movie, "w300"));
+          var panelBody = $("<div></div>")
+            .attr("class", "panel-body")
+            .append(poster)
+            .append(button);
+
+          // panel
+          var panel = $("<div></div>")
+            .attr("class", "panel panel-default")
+            .append(panelHeading)
+            .append(panelBody);
+
+
+          var button = $("<button></button>")
+            .text("I watched it")
+            .attr("class", "btn")
+            .click(function() {
+              removeFromWatchlist(movie);
+              render();
+            })
+            .hide();
+
+          var itemView = $("<li></li>")
+            .append(panel)
+            .append(button)
+            .mouseover(function() {
+              button.show();
+            })
+            .mouseleave(function() {
+              button.hide();
+            });
+
+          watchlistElement.append(itemView)
+
         });
       });
+      $("#section-watchlist").removeClass('hidden');
     }
 
     $(".mywatchlist").click(function(){
