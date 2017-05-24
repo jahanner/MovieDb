@@ -42,6 +42,9 @@
     <header>
       <h2 style='text-align: center'><a href='#' class='mywatchlist'>My Watchlist</h2></a>
       <hr/>
+         <div id="section-watchlist">
+            <ul></ul>
+         </div>
     </header>
 
   <section id="section-browse">
@@ -94,10 +97,6 @@
     </div>
   </section>
 
-   <section id="section-watchlist">
-    <ul></ul>
-  </section>
-
   <footer class="container">
     <p>
       Jesse Hanner 2017
@@ -113,8 +112,10 @@
         var query = $("#form-search input[name=query]").val();
         searchMovies(query, render);
       });
+      // DONE
       // add event handler to the "Add to Watchlist" button
 
+      // DONE
       // add event handler for when the carousel has slid
       $("#browse-carousel").bind("slid.bs.carousel", function() {
           console.log("slid")
@@ -125,6 +126,7 @@
       });
       // initial fetch
       searchMovies("", render);
+      $("#section-watchlist").addClass("hidden");
     });
   </script>
 
