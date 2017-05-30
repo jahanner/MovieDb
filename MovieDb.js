@@ -231,6 +231,7 @@
 
     }
 
+
     function displayMovies() {
       var user_email = firebase.auth().currentUser.email;
       var watchlistElement = $("#section-watchlist ul");
@@ -250,15 +251,15 @@
 
         $.ajax(settings).done(function (response) {
         
-
           console.log(movie.val());
-          var rev = response.revenue.toString();
-          if (rev === '0'){
+          var rev = response.revenue;
+          var nf = Intl.NumberFormat();
+
+          if (rev === 0){
             var revenue = $("<h6></h6>").text("Movie still in theaters, total revenue not yet determinded.");
           }
           else {
-              var revenue = $("<h6></h6>").text("Total revenue: $" + rev);
-
+            var revenue = $("<h6></h6>").text("Total revenue: $" + nf.format(rev));
           }
           var title = $("<h4></h4>").text(movie.val().original_title);
           var rating = movie.val().vote_average;
