@@ -11,7 +11,13 @@
     var api = {
       root: "https://api.themoviedb.org/3",
       token: "8e888fa39ec243e662e1fb738c42ae99",
-      imageBaseUrl: "http://image.tmdb.org/t/p/"
+      imageBaseUrl: "http://image.tmdb.org/t/p/",
+
+        posterUrl: function(movie) {
+        var baseImageUrl = "http://image.tmdb.org/t/p/w300/";
+        return baseImageUrl + movie.poster_path; 
+      }
+
     }
 
 
@@ -199,6 +205,7 @@
       model.watchlistItems = model.watchlistItems.filter(function(item) {
         return item !== movie;
       });
+
     }
 
     function escapeEmailAddress(email) {
@@ -232,14 +239,36 @@
       ref.once("value", function(snapshot) {
         snapshot.forEach(function(movie) {
 
+          var settings = {
+          "async": true,
+          "crossDomain": true,
+          "url": "https://api.themoviedb.org/3/movie/" + movie.val().id + "?language=en-US&api_key=8e888fa39ec243e662e1fb738c42ae99",
+          "method": "GET",
+          "headers": {},
+          "data": "{}"
+        }
+
+        $.ajax(settings).done(function (response) {
+        
+
           console.log(movie.val());
+          var rev = response.revenue.toString();
+          if (rev === '0'){
+            var revenue = $("<h6></h6>").text("Movie still in theaters, total revenue not yet determinded.");
+          }
+          else {
+              var revenue = $("<h6></h6>").text("Total revenue: $" + rev);
+
+          }
           var title = $("<h4></h4>").text(movie.val().original_title);
           var rating = movie.val().vote_average;
-          var vote = $("<h6></h6>").text("Average rating " + rating + " out of 10.");
+          var vote = $("<h5></h5>").text("Average rating " + rating + " out of 10.");
           var panelHeading = $("<div></div>")
             .attr("class", "panel-heading")
             .append(title)
-            .append(vote);
+            .append(vote)
+            .append(revenue);
+
 
           // panel body
           var poster = $("<img></img>")
@@ -261,7 +290,6 @@
             .attr("class", "btn")
             .click(function() {
               removeFromWatchlist(movie);
-              render();
             })
             .hide();
 
@@ -278,6 +306,7 @@
           watchlistElement.append(itemView)
 
         });
+      });
       });
       $("#section-watchlist").removeClass('hidden');
     }
