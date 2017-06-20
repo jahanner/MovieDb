@@ -105,29 +105,6 @@
 
   <script src="MovieDb.js"></script>
 
-  <script>
-    $(document).ready(function() {
-      $("#form-search").submit(function(evt) {
-        evt.preventDefault();
-        var query = $("#form-search input[name=query]").val();
-        searchMovies(query, render);
-      });
-      // DONE
-      // add event handler to the "Add to Watchlist" button
-      // DONE
-      // add event handler for when the carousel has slid
-      $("#browse-carousel").bind("slid.bs.carousel", function() {
-          console.log("slid")
-          var newIndex = $("#browse-carousel").find(".active").index();
-          console.log(newIndex);
-          model.browseActiveIndex = newIndex;
-          render();
-      });
-      // initial fetch
-      searchMovies("", render);
-      $("#section-watchlist").addClass("hidden");
-    });
-  </script>
 
 </body>
 </html>
