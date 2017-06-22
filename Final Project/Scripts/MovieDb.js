@@ -24,6 +24,9 @@ $(document).ready(function() {
     evt.preventDefault();
     var query = $("#form-search input[name=query]").val();
     searchMovies(query, render);
+    if(TypeError){
+      window.alert("Sorry we were unable to find that title, perhaps it was spelled wrong?")
+    }
   });
 
   $("#browse-carousel").bind("slid.bs.carousel", function() {
@@ -65,7 +68,7 @@ function searchMovies(query, callback) {
     query,
     function(keywordsResponse) {
       console.log("fetch succeeded");
-      var firstKeywordID = keywordsResponse.results[0].id
+      var firstKeywordID = keywordsResponse.results[0].id;
       var data = {
         api_key: api.token,
         with_keywords: firstKeywordID
@@ -99,7 +102,7 @@ function fetchKeywords(query, cbSuccess, cbError) {
       query: query,
     },
     success: cbSuccess,
-    error: cbError
+    error: cbError,
   });
 }
 
@@ -234,12 +237,11 @@ function addActiveMovie() {
   var user_email = firebase.auth().currentUser.email;
   var activeMovie = model.browseItems[model.browseActiveIndex];
   var movie = activeMovie.title;
-  var ref = firebase.database().ref("Users/" + escapeEmailAddress(user_email) + '/movies/' + escapeEmailAddress(movie));
+  var ref = firebase.database().ref("Users/" + escapeEmailAddress(user_email) + '/movies/').push();
   ref.set(activeMovie);
-  model.watchlistItems.push(activeMovie);
   watchlistElement.append(activeMovie);
   ref.on("value", function(snapshot) {
-    console.log(snapshot.key);
+    console.log(activeMovie.title);
   });
 
 }
@@ -265,16 +267,20 @@ function displayMovies() {
     $.ajax(settings).done(function (response) {
 
       console.log(movie.val());
+      console.log(movie.key);
       var rev = response.revenue;
       var nf = Intl.NumberFormat();
-
+      var release_date = '';
+      for (var i = 0; i < 4; i ++){
+        release_date += response.release_date[i];
+      }
       if (rev === 0){
         var revenue = $("<h6></h6>").text("Revenue information unavailable.");
       }
       else {
         var revenue = $("<h6></h6>").text("Total revenue: $" + nf.format(rev));
       }
-      var title = $("<h4></h4>").text(movie.val().original_title);
+      var title = $("<h4></h4>").text(movie.val().original_title + " (" + release_date + ")");
       var rating = movie.val().vote_average;
       var vote = $("<h5></h5>").text("Average rating " + rating + " out of 10 (TheMovieDB)");
       var panelHeading = $("<div></div>")
@@ -303,8 +309,8 @@ function displayMovies() {
         .text("I watched it")
         .attr("class", "btn")
         .click(function() {
-          console.log(movie.val());
-          ref.movie.val().remove();
+          var delete_movie = firebase.database().ref("Users/" + escapeEmailAddress(user_email) + '/movies/' + movie.key);
+          delete_movie.remove();
         })
         .hide();
 
