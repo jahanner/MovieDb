@@ -21,21 +21,28 @@
 
     <h1>Movie Watchlist</h1>
 
-    <p>Keep a list of all the movies you've been meaning to watch.</p>
+    <p>[keep a list of all the movies you have always been meaning to watch]</p>
 
   </header>
 
     <div class='container' style='text-align: center;'>
 
+      <div class='econtainer' style='text-align: center;'>
+
         <input id='txtEmail' type='email' placeholder='Email' style='color: black;'/>
 
         <input id='txtPassword' type='password' placeholder='Password' style='color: black; '/>
+
+      </div>
+      <div class='lcontainer' style='text-align: center;'>
 
         <button id='btnLogin' class='btn btn-primary' style='background-color: blue;'>Log in</button>
 
         <button id='btnSignUp' class='btn btn-secondary' style='background-color: #ADD8E6; color: black;'>Sign Up</button>
 
-        <button id='btnLogout' class='btn btn-action' style='background-color: red; color: white;'>Log out</button>
+        <button id='btnLogout' class='btn btn-action' style='background-color: #ff3333; color: white;'>Log out</button>
+
+      </div>
 
     </div>
 
@@ -51,10 +58,10 @@
     <div class="row">
 
       <div class="col-sm-8"/>
-        <div class="well">
+        <div class="well" style='background-color: white;'>
           <div class="row">
 
-            <div class="col-sm-7" id="browse-info" style='color: black; background-color: #0066ff;'></div>
+            <div class="col-sm-7" id="browse-info" style='color: black; background-color: #33cc33;'></div>
 
             <div class="col-sm-5">
               <div class="carousel slide" id="browse-carousel"/>
@@ -81,7 +88,7 @@
       <div class="col-sm-4">
 
         <header>
-          <h3>Browse Movies</h3>
+          <h3 style='color: #337ab7'>Browse Movies</h3>
         </header>
 
         <form id="form-search">

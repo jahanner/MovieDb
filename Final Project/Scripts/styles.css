@@ -2,6 +2,9 @@
 html, body {
   font-family: 'Roboto', 'Helvetica', sans-serif;
 }
+body {
+  background-color: black;
+}
 
 }
 
@@ -16,8 +19,8 @@ html, body {
 }
 
 .jumbotron {
-	background: blue;
-	color: white;
+	background: #33cc33;
+	color: black;
 	text-align: center;
 }
 
@@ -25,7 +28,21 @@ html, body {
 	color: gray;
 	min-height: 300px;
 	text-align: center;
-
+}
+ #btnLogout {
+   width: 10%;
+ }
+ #btnSignUp {
+   width: 10%;
+ }
+#btnLogin {
+  width: 10%;
+}
+#txtEmail {
+  width: 15%;
+}
+#txtPassword {
+  width: 15%;
 }
 
 #section-watchlist li {
@@ -56,7 +73,7 @@ html, body {
 }
 
 .carousel {
-	max-width: 300px;
+	max-width: 347px;
 	margin: 0 auto;
 	margin-bottom: 10px;
 }
