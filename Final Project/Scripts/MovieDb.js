@@ -1,7 +1,6 @@
 var model = {
   watchlistItems: [],
   browseItems: [],
-  // DONE
   // add a new field, browseActiveIndex, initially set to 0
   browseActiveIndex: 0
 }
@@ -146,7 +145,7 @@ function render() {
       .append(panelHeading)
       .append(panelBody);
 
-
+    //button
     var button = $("<button></button>")
       .text("I watched it")
       .attr("class", "btn")
@@ -241,7 +240,6 @@ function render2() {
       .append(panelHeading)
       .append(panelBody);
 
-
     var button = $("<button></button>")
       .text("I watched it")
       .attr("class", "btn")
@@ -262,7 +260,7 @@ function render2() {
 
   // insert browse items
   model.browseItems.forEach(function(movie, index) {
-    // DONE
+
     // replace the old ul code with new carousel implementation:
     // create an image with the movie poster
     // wrap the image inside a div
@@ -276,7 +274,7 @@ function render2() {
 
     carouselInner.append(carouselItem);
 
-    // DONE
+
     // if this index is the current active index,
     // give this item a class attribute of "active"
     if (index === model.browseActiveIndex) {
@@ -285,7 +283,7 @@ function render2() {
 
   });
 
-  // DONE display info for the currently active movie
+  // display info for the currently active movie
   var activeMovie = model.browseItems[model.browseActiveIndex];
   var title = $("<h2></h2>").text(activeMovie.original_title);
   var overview = $("<h4></h4>").text(activeMovie.overview);
@@ -294,7 +292,6 @@ function render2() {
     .append($("<hr/>"))
     .append(overview);
 
-  // DONE
   // disable or enable the Add to Watchlist button depending on
   // whether the current active movie is already on the user's watchlist
   var alreadyOnWatchlist = model.watchlistItems.indexOf(activeMovie) !== -1
@@ -310,7 +307,7 @@ function posterUrl(movie, width) {
  * removes the given movie from model.watchlistItems
  */
 function removeFromWatchlist(movie) {
-  // DONE
+
   model.watchlistItems = model.watchlistItems.filter(function(item) {
     return item !== movie;
   });
@@ -326,7 +323,7 @@ function escapeEmailAddress(email) {
 }
 
 function addActiveMovie() {
-  // DONE
+
   var watchlistElement = $("#section-watchlist ul");
   var user_email = firebase.auth().currentUser.email;
   var activeMovie = model.browseItems[model.browseActiveIndex];
@@ -338,6 +335,18 @@ function addActiveMovie() {
   ref.on("value", function(snapshot) {
     console.log(activeMovie.title);
   });
+
+}
+
+function addwatchedMovie() {
+
+  var watchlistElement = $("#section-watched ul");
+  var user_email = firebase.auth().currentUser.email;
+  var activeMovie = model.browseItems[model.browseActiveIndex];
+  var movie = activeMovie.title;
+  var ref = firebase.database().ref("Users/" + escapeEmailAddress(user_email) + '/movies/').push();
+  ref.set(activeMovie);
+  watchlistElement.append(activeMovie);
 
 }
 
@@ -375,15 +384,22 @@ function displayMovies() {
       else {
         var revenue = $("<h6></h6>").text("Total revenue: $" + nf.format(rev));
       }
+      var stars = $("<div> <select id='stars'> <option value='*'>*</option> <option value='**'>**</option> <option value='***'>***</option> <option value='****'>****</option> <option value='*****'>*****</option> </select> </div>");
+      var myrating = $("<h5></h5>").text("My rating");
       var title = $("<h4></h4>").text(movie.val().original_title + " (" + release_date + ")");
+      movie.val().certification_country === 'US';
+      var rated = $("<p></p>").text("Rated " + movie.val().certification);
       var rating = movie.val().vote_average;
-      var vote = $("<h5></h5>").text("Average rating " + rating + " out of 10 (TheMovieDB)");
+      console.log(rated);
+      var vote = $("<h5></h5>").text(rating + " (TheMovieDB)");
       var panelHeading = $("<div></div>")
         .attr("class", "panel-heading")
+        .css("background-color", "rgb(0, 147, 255);")
         .append(title)
         .append(vote)
-        .append(revenue);
-
+        .append(rated)
+        .append(revenue)
+        .append(myrating, stars);
 
       // panel body
       var poster = $("<img></img>")
@@ -399,13 +415,13 @@ function displayMovies() {
         .append(panelHeading)
         .append(panelBody);
 
-
       var button = $("<button></button>")
         .text("I watched it")
         .attr("class", "btn")
         .click(function() {
           var delete_movie = firebase.database().ref("Users/" + escapeEmailAddress(user_email) + '/movies/' + movie.key);
           delete_movie.remove();
+          $("#section-watched").append(delete_movie);
           window.alert("You removed " + movie.val().original_title + " from your watchlist.");
         })
         .hide();
@@ -426,13 +442,96 @@ function displayMovies() {
   });
   });
   $("#section-watchlist").removeClass('hidden');
+  $("#section-watched").addClass('hidden');
 }
 
+function ratedMovies() {
+  var user_email = firebase.auth().currentUser.email;
+  var watchlistElement = $("#section-watchlist ul");
+  var ref = firebase.database().ref("Users/" + escapeEmailAddress(user_email) + '/movies/');
+
+  ref.once("value", function(snapshot) {
+    snapshot.forEach(function(movie) {
+
+      var settings = {
+      "async": true,
+      "crossDomain": true,
+      "url": "https://api.themoviedb.org/3/movie/" + movie.val().id + "?language=en-US&api_key=8e888fa39ec243e662e1fb738c42ae99",
+      "method": "GET",
+      "headers": {},
+      "data": "{}"
+    }
+    //call to get revenue information
+    $.ajax(settings).done(function (response) {
+
+      console.log(movie.val());
+      console.log(movie.key);
+      var rev = response.revenue;
+      var nf = Intl.NumberFormat();
+      var release_date = '';
+      for (var i = 0; i < 4; i ++){
+        release_date += response.release_date[i];
+      }
+      if (rev === 0){
+        var revenue = $("<h6></h6>").text("Revenue information unavailable.");
+      }
+      else {
+        var revenue = $("<h6></h6>").text("Total revenue: $" + nf.format(rev));
+      }
+      var stars = $("<div> <select id='stars'> <option value='*'>*</option> <option value='**'>**</option> <option value='***'>***</option> <option value='****'>****</option> <option value='*****'>*****</option> </select> </div>");
+      var myrating = $("#stars");
+      var title = $("<h4></h4>").text(movie.val().original_title + " (" + release_date + ")");
+      var panelHeading = $("<div></div>")
+        .attr("class", "panel-heading")
+        .append(title)
+        .append(stars);
+
+      // panel body
+      var poster = $("<img></img>")
+        .attr("src", "http://image.tmdb.org/t/p/w300/" + movie.val().poster_path);
+      var panelBody = $("<div></div>")
+        .attr("class", "panel-body")
+        .append(poster)
+        .append(myrating);
+
+
+      // panel
+      var panel = $("<div></div>")
+        .attr("class", "panel panel-default")
+        .append(panelHeading)
+        .append(panelBody);
+
+      var itemView = $("<li></li>")
+        .append(panel);
+
+      watchlistElement.append(itemView)
+
+    });
+  });
+  });
+  $("#section-watchlist").addClass('hidden');
+  $("#section-watched").removeClass('hidden');
+}
+
+//to be displayed when mywatchlist is clicked
 $(".mywatchlist").click(function(){
   firebase.auth().onAuthStateChanged(firebaseUser => {
   if(firebaseUser) {
       var user_email = firebase.auth().currentUser.email;
       displayMovies();
+      render();
+    }
+  else {
+      window.alert('You have to be logged in to view this yo.');
+    }
+ })
+})
+
+$(".myratings").click(function(){
+  firebase.auth().onAuthStateChanged(firebaseUser => {
+  if(firebaseUser) {
+      var user_email = firebase.auth().currentUser.email;
+      ratedMovies();
       render();
     }
   else {
@@ -456,7 +555,7 @@ $("#add-to-watchlist").click(function() {
     });
 
 });
-
+//info for firebase
 var config = {
   apiKey: "AIzaSyC62ckmk8cuoWd71_jhKtlEdoJRBPLZ2ro",
   authDomain: "movie-watchlist-app.firebaseapp.com",
@@ -493,7 +592,7 @@ btnSignUp.on('click', function(){
     var promise = auth.createUserWithEmailAndPassword(email, pass);
     promise.catch(e => window.alert(e.message));
 })
-
+//Logout event
 btnLogout.on('click', function(){
     firebase.auth().signOut();
 });

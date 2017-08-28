@@ -6,8 +6,6 @@ body {
   background-color: black;
 }
 
-}
-
 .well {
 	background: blue;
 	color: white;
@@ -16,6 +14,14 @@ body {
 
 .btn {
 	width: 100%;
+}
+
+a.mywatchlist {
+  color: #EBEB00;
+}
+
+a.myratings {
+  color: #EBEB00;
 }
 
 .jumbotron {

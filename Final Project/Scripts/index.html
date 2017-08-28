@@ -13,13 +13,13 @@
 
   <link rel="stylesheet" href="styles.css"/>
 
-  <title>Movie Watchlist</title>
+  <title>The Movie Watchlist</title>
 </head>
 <body>
 
   <header class="jumbotron" style='text-align: center;'>
 
-    <h1>Movie Watchlist</h1>
+    <h1>The Movie Watchlist</h1>
 
     <p>[keep a list of all the movies you have always been meaning to watch]</p>
 
@@ -36,11 +36,11 @@
       </div>
       <div class='lcontainer' style='text-align: center;'>
 
-        <button id='btnLogin' class='btn btn-primary' style='background-color: blue;'>Log in</button>
+        <button id='btnLogin' class='btn btn-primary' style='background-color: blue;'>Sign in</button>
 
         <button id='btnSignUp' class='btn btn-secondary' style='background-color: #ADD8E6; color: black;'>Sign Up</button>
 
-        <button id='btnLogout' class='btn btn-action' style='background-color: #ff3333; color: white;'>Log out</button>
+        <button id='btnLogout' class='btn btn-action' style='background-color: #ff3333; color: white;'>Sign out</button>
 
       </div>
 
@@ -49,7 +49,14 @@
     <header>
       <h2 style='text-align: center'><a href='#' class='mywatchlist'>My Watchlist</h2></a>
       <hr/>
+
          <div id="section-watchlist">
+            <ul></ul>
+         </div>
+         <h2 style='text-align: center'><a href='#' class='myratings'>My Ratings</h2></a>
+         <hr/>
+         
+         <div id="section-watched">
             <ul></ul>
          </div>
     </header>
@@ -88,7 +95,7 @@
       <div class="col-sm-4">
 
         <header>
-          <h3 style='color: #337ab7'>Browse Movies</h3>
+          <h3 style='color: #EBEB00'>Browse Movies</h3>
         </header>
 
         <form id="form-search">
