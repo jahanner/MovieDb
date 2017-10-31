@@ -1,6 +1,7 @@
 var model = {
   watchlistItems: [],
   browseItems: [],
+  ratedItems: [],
   // add a new field, browseActiveIndex, initially set to 0
   browseActiveIndex: 0
 }
@@ -19,12 +20,14 @@ var api = {
 }
 
 $(document).ready(function() {
+  $("#section-watched").addClass('hidden');
+  $("#section-watchlist").addClass('hidden');
   $("#form-search").submit(function(evt) {
     evt.preventDefault();
     var query = $("#form-search input[name=query]").val();
     searchMovies(query, render);
     if(TypeError){
-      window.alert("Sorry we were unable to find that title, perhaps it was spelled wrong?")
+      window.alert("Hum...something went wrong")
     }
   });
 
@@ -37,7 +40,8 @@ $(document).ready(function() {
   });
   // initial fetch
   searchMovies("", render);
-  $("#section-watchlist").addClass("hidden");
+  $("#section-watched").addClass('hidden');
+  $("#section-watchlist").addClass('hidden');
 });
 /**
  * Makes an AJAX request to the /discover endpoint of the API, using the
@@ -113,11 +117,13 @@ function render() {
   var watchlistElement = $("#section-watchlist ul");
   var carouselInner = $("#section-browse .carousel-inner");
   var browseInfo = $("#browse-info");
+  var watchedElement = $("#section-watched ul");
 
   // clear everything
   watchlistElement.empty();
   carouselInner.empty();
   browseInfo.empty();
+  watchedElement.empty();
 
   // insert watchlist items
   model.watchlistItems.forEach(function(movie) {
@@ -189,7 +195,7 @@ function render() {
 
   });
 
-  // DONE display info for the currently active movie
+  // display info for the currently active movie
   var activeMovie = model.browseItems[model.browseActiveIndex];
   var title = $("<h2></h2>").text(activeMovie.original_title);
   var overview = $("<h4></h4>").text(activeMovie.overview);
@@ -198,7 +204,7 @@ function render() {
     .append($("<hr/>"))
     .append(overview);
 
-  // DONE
+
   // disable or enable the Add to Watchlist button depending on
   // whether the current active movie is already on the user's watchlist
   var alreadyOnWatchlist = model.watchlistItems.indexOf(activeMovie) !== -1
@@ -314,7 +320,9 @@ function removeFromWatchlist(movie) {
 
 }
 
+// makes any kind of email acceptable for firebase
 function escapeEmailAddress(email) {
+
   if (!email) return false
 
   email = email.toLowerCase();
@@ -322,6 +330,7 @@ function escapeEmailAddress(email) {
   return email;
 }
 
+//function to add a movie to the watchlist
 function addActiveMovie() {
 
   var watchlistElement = $("#section-watchlist ul");
@@ -337,14 +346,14 @@ function addActiveMovie() {
   });
 
 }
-
+//function to add a movie from the watchlist to alreadywatched
 function addwatchedMovie() {
 
   var watchlistElement = $("#section-watched ul");
   var user_email = firebase.auth().currentUser.email;
   var activeMovie = model.browseItems[model.browseActiveIndex];
   var movie = activeMovie.title;
-  var ref = firebase.database().ref("Users/" + escapeEmailAddress(user_email) + '/movies/').push();
+  var ref = firebase.database().ref("Users/" + escapeEmailAddress(user_email) + '/alreadywatched/').push();
   ref.set(activeMovie);
   watchlistElement.append(activeMovie);
 
@@ -388,18 +397,19 @@ function displayMovies() {
       var myrating = $("<h5></h5>").text("My rating");
       var title = $("<h4></h4>").text(movie.val().original_title + " (" + release_date + ")");
       movie.val().certification_country === 'US';
-      var rated = $("<p></p>").text("Rated " + movie.val().certification);
+      var rated = movie.val().certification;
       var rating = movie.val().vote_average;
       console.log(rated);
       var vote = $("<h5></h5>").text(rating + " (TheMovieDB)");
       var panelHeading = $("<div></div>")
         .attr("class", "panel-heading")
-        .css("background-color", "rgb(0, 147, 255);")
+        .css("background-color", "#33cc33")
+        .css("color", "black")
         .append(title)
         .append(vote)
         .append(rated)
-        .append(revenue)
-        .append(myrating, stars);
+        .append(revenue);
+        // .append(myrating, stars);
 
       // panel body
       var poster = $("<img></img>")
@@ -409,18 +419,23 @@ function displayMovies() {
         .append(poster)
         .append(button);
 
+
       // panel
       var panel = $("<div></div>")
         .attr("class", "panel panel-default")
         .append(panelHeading)
         .append(panelBody);
-
+      //button to remove movie from watchlist
       var button = $("<button></button>")
         .text("I watched it")
         .attr("class", "btn")
         .click(function() {
           var delete_movie = firebase.database().ref("Users/" + escapeEmailAddress(user_email) + '/movies/' + movie.key);
+          var del = model.ratedItems;
+          del.push(movie);
+          addwatchedMovie();
           delete_movie.remove();
+          model.ratedItems.append(delete_movie);
           $("#section-watched").append(delete_movie);
           window.alert("You removed " + movie.val().original_title + " from your watchlist.");
         })
@@ -445,54 +460,35 @@ function displayMovies() {
   $("#section-watched").addClass('hidden');
 }
 
-function ratedMovies() {
+
+function alreadywatched() {
   var user_email = firebase.auth().currentUser.email;
-  var watchlistElement = $("#section-watchlist ul");
-  var ref = firebase.database().ref("Users/" + escapeEmailAddress(user_email) + '/movies/');
+  var watchlistElement = $("#section-watched ul");
+  var ref = firebase.database().ref("Users/" + escapeEmailAddress(user_email) + '/alreadywatched/');
+  var stars = $( "#stars option:selected" ).text();
 
   ref.once("value", function(snapshot) {
     snapshot.forEach(function(movie) {
 
-      var settings = {
-      "async": true,
-      "crossDomain": true,
-      "url": "https://api.themoviedb.org/3/movie/" + movie.val().id + "?language=en-US&api_key=8e888fa39ec243e662e1fb738c42ae99",
-      "method": "GET",
-      "headers": {},
-      "data": "{}"
-    }
-    //call to get revenue information
-    $.ajax(settings).done(function (response) {
-
       console.log(movie.val());
       console.log(movie.key);
-      var rev = response.revenue;
-      var nf = Intl.NumberFormat();
-      var release_date = '';
-      for (var i = 0; i < 4; i ++){
-        release_date += response.release_date[i];
-      }
-      if (rev === 0){
-        var revenue = $("<h6></h6>").text("Revenue information unavailable.");
-      }
-      else {
-        var revenue = $("<h6></h6>").text("Total revenue: $" + nf.format(rev));
-      }
-      var stars = $("<div> <select id='stars'> <option value='*'>*</option> <option value='**'>**</option> <option value='***'>***</option> <option value='****'>****</option> <option value='*****'>*****</option> </select> </div>");
-      var myrating = $("#stars");
-      var title = $("<h4></h4>").text(movie.val().original_title + " (" + release_date + ")");
+
+      var title = $("<h3></h3>").text(movie.val().original_title);
+      var rating = movie.val().vote_average;
+      var vote = $("<h5></h5>").text(rating + " (TheMovieDB)");
       var panelHeading = $("<div></div>")
         .attr("class", "panel-heading")
+        .css("background-color", "#33cc33")
+        .css("color", "black")
         .append(title)
-        .append(stars);
+        .append(vote);
 
       // panel body
       var poster = $("<img></img>")
         .attr("src", "http://image.tmdb.org/t/p/w300/" + movie.val().poster_path);
       var panelBody = $("<div></div>")
         .attr("class", "panel-body")
-        .append(poster)
-        .append(myrating);
+        .append(poster);
 
 
       // panel
@@ -507,7 +503,6 @@ function ratedMovies() {
       watchlistElement.append(itemView)
 
     });
-  });
   });
   $("#section-watchlist").addClass('hidden');
   $("#section-watched").removeClass('hidden');
@@ -524,19 +519,25 @@ $(".mywatchlist").click(function(){
   else {
       window.alert('You have to be logged in to view this yo.');
     }
+    $(".mywatchlist").click(function(){
+      $("#section-watchlist").addClass('hidden');
+    })
  })
 })
-
+//to be displayed when alreadywatched is clicked
 $(".myratings").click(function(){
   firebase.auth().onAuthStateChanged(firebaseUser => {
   if(firebaseUser) {
       var user_email = firebase.auth().currentUser.email;
-      ratedMovies();
+      alreadywatched();
       render();
     }
   else {
       window.alert('You have to be logged in to view this yo.');
     }
+    $(".myratings").click(function(){
+      $("#section-watched").addClass('hidden');
+    })
  })
 })
 
